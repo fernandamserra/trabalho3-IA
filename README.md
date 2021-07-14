@@ -23,4 +23,7 @@ Por fim, para excutar o código entre na pasta clonada deste repositório e exec
 python3 LTN_Michalski_o_retorno.py
 ```
 
-Se tudo funcionar como esperado serão exibidos alguns `warnings` e em seguida serão exibidas as epochs e será gerado um arquivo chamado `train_results.csv` com histórico completo de treino
+Se tudo funcionar como esperado serão exibidos alguns `warnings` e em seguida serão exibidas as epochs e será gerado um arquivo chamado `train_results.csv` com histórico completo de treinos
+
+# Notas
+* Os gráficos desse trabalho podem ser encontrados em nosso relatório junto com nossas explicações e observações do problema resolvida
