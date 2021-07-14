@@ -140,8 +140,6 @@ def axioms(features, labels, training = False):
             axioms.append(NoWheels([g[j], g[qtdrod(df.iloc[i]['num_wheels'+str(index+1)])]]))
             axioms.append(LoadShape([g[j], g[qtdloadshape(df.iloc[i]['load_shape'+str(index+1)])]]))
     
-    # pain and no gain
-
     axioms = tf.stack([tf.squeeze(ax) for ax in axioms])
     sat_level = formula_aggregator(axioms)
     return sat_level, axioms
@@ -149,34 +147,6 @@ def axioms(features, labels, training = False):
 for features, labels in ds_test:
     print("Initial sat level %.5f"%axioms(features, labels)[0])
     break
-
-import functools
-
-'''
-trainable_variables = \
-        CarCount.trainable_variables \
-        + NoOfDiffLoads.trainable_variables \
-        + functools.reduce(lambda a,b: a+b, map(lambda a: a.trainable_variables, NoWheels)) \
-        + functools.reduce(lambda a,b: a+b, map(lambda a: a.trainable_variables, Length)) \
-        + functools.reduce(lambda a,b: a+b, map(lambda a: a.trainable_variables, Shape)) \
-        + functools.reduce(lambda a,b: a+b, map(lambda a: a.trainable_variables, NoLoads)) \
-        + functools.reduce(lambda a,b: a+b, map(lambda a: a.trainable_variables, LoadShape)) \
-        + list(g.values())
-
-optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
-
-for epoch in range(2000):
-    with tf.GradientTape() as tape:
-        loss_value = 1. - axioms()[0]
-    grads = tape.gradient(loss_value, trainable_variables)
-    optimizer.apply_gradients(zip(grads, trainable_variables))
-    if epoch%200 == 0:
-        print("Epoch %d: Sat Level %.3f"%(epoch, axioms()[0]))
-
-print("Training finished at Epoch %d with Sat Level %.3f"%(epoch, axioms()[0]))
-'''
-
-
 
 metrics_dict = {
     'train_sat_kb': tf.keras.metrics.Mean(name='train_sat_kb'),
@@ -225,3 +195,8 @@ commons.train(
     csv_path="train_results.csv",
     track_metrics=25,
 )
+
+print("Acurácia final no dataset de treino: %.1f%%"%(metrics_dict['train_accuracy'].result().numpy()*100))
+print("Acurácia final no dataset de testes: %.1f%%"%(metrics_dict['test_accuracy'].result().numpy()*100))
+
+print("Acurácia final: %.1f%%"%((metrics_dict['test_accuracy'].result().numpy()*100 + metrics_dict['train_accuracy'].result().numpy()*100)/2))
